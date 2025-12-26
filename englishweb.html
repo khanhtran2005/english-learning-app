@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(to bottom, #f0f4ff 0%, #e8eeff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #5b7fe6;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #7a8aa5;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #5b7fe6;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #5b7fe6;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        .preparing-box {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preparing-box span {
+            color: #7a8aa5;
+            font-size: 14px;
+        }
+
+        .preparing-box strong {
+            color: #5b7fe6;
+            font-size: 16px;
+            margin-left: 5px;
+        }
+
+        .clear-btn {
+            color: #5b7fe6;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: #7a8aa5;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, var(--color1), var(--color2));
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:active {
+            transform: translateY(0);
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .card-content h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .card-content p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+        }
+
+        /* Color schemes */
+        .card.coral {
+            --color1: #ff8b94;
+            --color2: #ff6b7a;
+        }
+
+        .card.teal {
+            --color1: #7dd3c0;
+            --color2: #5bc4af;
+        }
+
+        .card.blue {
+            --color1: #6ec1e4;
+            --color2: #5ab1d4;
+        }
+
+        .card.orange {
+            --color1: #ffb088;
+            --color2: #ffa070;
+        }
+
+        .card.mint {
+            --color1: #a8e6cf;
+            --color2: #8eddb7;
+        }
+
+        .header-with-back {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-with-back .header {
+            margin-bottom: 0;
+        }
+
+        /* Menu Sidebar */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 999;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .menu-sidebar.active {
+            right: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e8eeff;
+        }
+
+        .menu-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #7a8aa5;
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #f0f4ff;
+        }
+
+        .menu-item-icon {
+            width: 45px;
+            height: 45px;
+            background: #e8f0ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .menu-item span {
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Main Menu -->
+        <div class="screen active" id="screen1">
+            <div class="header">
+                <div>
+                    <h1>English Learning</h1>
+                    <p>Learn English easily</p>
+                </div>
+                <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            </div>
+
+            <div class="preparing-box">
+                <div>
+                    <span>Preparing for:</span>
+                    <strong>TOEFL</strong>
+                </div>
+                <button class="clear-btn" onclick="clearTest()">Clear</button>
+            </div>
+
+            <h2 class="section-title">Choose Your Learning Path</h2>
+            <p class="section-subtitle">Select a category to start learning</p>
+
+            <div class="card coral" onclick="startLearning('speaking')">
+                <div class="card-icon">💬</div>
+                <div class="card-content">
+                    <h3>TOEFL English Speaking</h3>
+                </div>
+            </div>
+
+            <div class="card teal" onclick="startLearning('vocabulary')">
+                <div class="card-icon">📖</div>
+                <div class="card-content">
+                    <h3>TOEFL Vocabulary</h3>
+                </div>
+            </div>
+
+            <div class="card blue" onclick="startLearning('grammar')">
+                <div class="card-icon">📝</div>
+                <div class="card-content">
+                    <h3>TOEFL Grammar</h3>
+                </div>
+            </div>
+
+            <div class="card orange" onclick="startLearning('listening')">
+                <div class="card-icon">🎧</div>
+                <div class="card-content">
+                    <h3>TOEFL English Listening</h3>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 25px;">
+                <button class="clear-btn" onclick="goToScreen2()" style="font-size: 16px; text-decoration: none;">
+                    Change Test Type →
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 2: Test Selection -->
+        <div class="screen" id="screen2">
+            <div class="header-with-back">
+                <button class="back-btn" onclick="goToScreen1()">←</button>
+                <div class="header">
+                    <div>
+                        <h1>Select English Test</h1>
+                        <p>Choose your test type</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Available Tests</h2>
+            <p class="section-subtitle">Select a test to start preparing</p>
+
+            <div class="card coral" onclick="selectTest('TOEFL')">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <h3>TOEFL</h3>
+                    <p>Test of English as a Foreign Language</p>
+                </div>
+            </div>
+
+            <div class="card teal" onclick="selectTest('IELTS')">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <h3>IELTS</h3>
+                    <p>International English Language Testing System</p>
+                </div>
+            </div>
+
+            <div class="card blue" onclick="selectTest('TOEIC')">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <h3>TOEIC</h3>
+                    <p>Test of English for International Communication</p>
+                </div>
+            </div>
+
+            <div class="card orange" onclick="selectTest('GSAT')">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <h3>GSAT</h3>
+                    <p>General Scholastic Ability Test</p>
+                </div>
+            </div>
+
+            <div class="card mint" onclick="selectTest('GEPT')">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <h3>GEPT</h3>
+                    <p>General English Proficiency Test</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Overlay & Sidebar -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <div class="menu-sidebar" id="menuSidebar">
+        <div class="menu-header">
+            <h2>Menu</h2>
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+        </div>
+
+        <div class="menu-item" onclick="goToPage('profile')">
+            <div class="menu-item-icon">👤</div>
+            <span>Profile</span>
+        </div>
+
+        <div class="menu-item" onclick="goToPage('test')">
+            <div class="menu-item-icon">📄</div>
+            <span>English Test</span>
+        </div>
+
+        <div class="menu-item" onclick="goToPage('privacy')">
+            <div class="menu-item-icon">🛡️</div>
+            <span>Privacy</span>
+        </div>
+
+        <div class="menu-item" onclick="goToPage('settings')">
+            <div class="menu-item-icon">⚙️</div>
+            <span>Settings</span>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const overlay = document.getElementById('menuOverlay');
+            const sidebar = document.getElementById('menuSidebar');
+            overlay.classList.toggle('active');
+            sidebar.classList.toggle('active');
+        }
+
+        function goToPage(page) {
+            alert('Điều hướng đến: ' + page);
+            toggleMenu();
+        }
+
+        function goToScreen1() {
+            document.getElementById('screen2').classList.remove('active');
+            document.getElementById('screen1').classList.add('active');
+        }
+
+        function goToScreen2() {
+            document.getElementById('screen1').classList.remove('active');
+            document.getElementById('screen2').classList.add('active');
+        }
+
+        function selectTest(testName) {
+            alert('Đã chọn: ' + testName);
+            // Update preparing for text
+            document.querySelector('.preparing-box strong').textContent = testName;
+            goToScreen1();
+        }
+
+        function clearTest() {
+            document.querySelector('.preparing-box strong').textContent = 'None';
+        }
+
+        function startLearning(topic) {
+            alert('Bắt đầu học: ' + topic);
+        }
+    </script>
+</body>
+</html>
